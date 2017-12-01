@@ -2,10 +2,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from datasets import ade20k
-
+# from datasets import ade20k
+from datasets import satelite
 datasets_map = {
-    'ade20k': ade20k,
+    # 'ade20k': ade20k,
+    'satelite': satelite
 }
 
 

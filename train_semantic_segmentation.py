@@ -151,7 +151,7 @@ tf.app.flags.DEFINE_float(
 #######################
 
 tf.app.flags.DEFINE_string(
-    'dataset_name', 'ade20k', 'The name of the dataset to load.')
+    'dataset_name', 'satelite', 'The name of the dataset to load.')
 
 tf.app.flags.DEFINE_string(
     'dataset_split_name', 'train', 'The name of the train/test split.')
@@ -397,6 +397,8 @@ def main(_):
         FLAGS.dataset_name, FLAGS.dataset_split_name, FLAGS.dataset_dir)
 
     num_classes = dataset.num_classes
+    from IPython import embed
+    print(dataset.num_samples)
 
     ######################
     # Select the network #
@@ -428,19 +430,21 @@ def main(_):
 
       train_image_size = FLAGS.train_image_size or network_fn.default_image_size
 
-      image, label = image_preprocessing_fn(image, train_image_size, train_image_size,
-                                            label=label)
+      # image, label = image_preprocessing_fn(image, train_image_size, train_image_size,
+      #                                       label=label)
 
+      image = tf.to_float(tf.reshape(image, [FLAGS.train_image_size, FLAGS.train_image_size, 3]))
+      label = tf.reshape(label, [FLAGS.train_image_size, FLAGS.train_image_size, 1])
       images, labels = tf.train.batch(
           [image, label],
           batch_size=FLAGS.batch_size,
           num_threads=FLAGS.num_preprocessing_threads,
           capacity=5 * FLAGS.batch_size)
 
+      # embed()
       labels = slim.one_hot_encoding(labels, num_classes)
 
       batch_queue = slim.prefetch_queue.prefetch_queue([images, labels], capacity=2)
-
 
     ####################
     # Define the model #
